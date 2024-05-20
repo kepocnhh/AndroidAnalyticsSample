@@ -11,7 +11,7 @@ import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 
-internal class MainActivity : AppCompatActivity() {
+internal class FooActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val root = FrameLayout(this).also {
@@ -46,10 +46,9 @@ internal class MainActivity : AppCompatActivity() {
                 ViewGroup.LayoutParams.WRAP_CONTENT,
                 Gravity.BOTTOM,
             )
-            it.text = "foo"
+            it.text = "start"
             it.setOnClickListener {
-                val intent = Intent(this, FooActivity::class.java)
-                startActivity(intent)
+                // todo
             }
             root.addView(it)
         }
