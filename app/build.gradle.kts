@@ -104,4 +104,5 @@ androidComponents.onVariants { variant ->
 
 dependencies {
     implementation("androidx.appcompat:appcompat:1.6.1")
+    implementation("androidx.lifecycle:lifecycle-runtime:2.8.0")
 }
