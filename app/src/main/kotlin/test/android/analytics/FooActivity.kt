@@ -66,6 +66,8 @@ internal class FooActivity : AppCompatActivity() {
                                 }
                                 delay(100)
                             } else {
+                                App.analytics.log("time is up")
+                                // todo event
                                 break
                             }
                         }
@@ -123,6 +125,7 @@ internal class FooActivity : AppCompatActivity() {
             )
             it.text = "start"
             it.setOnClickListener {
+                App.analytics.log("click start timer")
                 startTimer()
             }
             root.addView(it)
@@ -136,6 +139,13 @@ internal class FooActivity : AppCompatActivity() {
             )
             it.text = "stop"
             it.setOnClickListener {
+                App.analytics.log("click stop timer")
+                val now = System.currentTimeMillis().milliseconds
+                App.analytics.report(
+                    entries = mapOf(
+                        "time:passed:ms" to (now - started!!).inWholeMilliseconds.toString(),
+                    ),
+                )
                 started = null
             }
             it.isEnabled = false
