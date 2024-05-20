@@ -40,7 +40,7 @@ internal class App : Application() {
         }
         */
         val locals: Locals = FinalLocals(this)
-        val analytics: Analytics = FinalAnalytics(this)
+        val analytics: Analytics = FinalAnalytics()
         analytics.setCustomKey("brand", Build.BRAND)
         analytics.setCustomKey("model", Build.MODEL)
         analytics.setCustomKey("android", Build.VERSION.SDK_INT.toString())

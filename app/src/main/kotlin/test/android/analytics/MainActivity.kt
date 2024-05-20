@@ -8,6 +8,7 @@ import android.view.Gravity
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.FrameLayout
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 
@@ -40,19 +41,40 @@ internal class MainActivity : AppCompatActivity() {
             it.setTextColor(Color.BLACK)
             root.addView(it)
         }
-        Button(this).also {
-            it.layoutParams = FrameLayout.LayoutParams(
+        LinearLayout(this).also { column ->
+            column.layoutParams = FrameLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT,
-                Gravity.BOTTOM,
+                Gravity.CENTER_VERTICAL,
             )
-            it.text = "foo"
-            it.setOnClickListener {
-                App.injection.analytics.log("go to Foo")
-                val intent = Intent(this, FooActivity::class.java)
-                startActivity(intent)
+            column.orientation = LinearLayout.VERTICAL
+            Button(this).also {
+                it.layoutParams = LinearLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT,
+                )
+                it.text = "foo"
+                it.setOnClickListener {
+                    App.injection.analytics.log("go to foo")
+                    val intent = Intent(this, FooActivity::class.java)
+                    startActivity(intent)
+                }
+                column.addView(it)
             }
-            root.addView(it)
+            Button(this).also {
+                it.layoutParams = LinearLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT,
+                )
+                it.text = "events"
+                it.setOnClickListener {
+                    App.injection.analytics.log("go to events")
+                    val intent = Intent(this, EventsActivity::class.java)
+                    startActivity(intent)
+                }
+                column.addView(it)
+            }
+            root.addView(column)
         }
         setContentView(root)
     }

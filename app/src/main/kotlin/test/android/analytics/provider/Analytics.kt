@@ -4,5 +4,5 @@ internal interface Analytics {
     fun log(message: String)
     fun setCustomKey(key: String, value: String)
     fun record(error: Throwable)
-    fun report(entries: Map<String, String>)
+    fun report(title: String, entries: Map<String, String>)
 }

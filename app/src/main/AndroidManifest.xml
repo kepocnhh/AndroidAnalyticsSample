@@ -14,5 +14,8 @@
         <activity android:name=".FooActivity"
             android:screenOrientation="portrait"
             android:exported="true"/>
+        <activity android:name=".EventsActivity"
+            android:screenOrientation="portrait"
+            android:exported="true"/>
     </application>
 </manifest>

@@ -142,6 +142,7 @@ internal class FooActivity : AppCompatActivity() {
                 App.injection.analytics.log("click stop timer")
                 val now = System.currentTimeMillis().milliseconds
                 App.injection.analytics.report(
+                    title = "stop timer",
                     entries = mapOf(
                         "time:passed:ms" to (now - started!!).inWholeMilliseconds.toString(),
                     ),

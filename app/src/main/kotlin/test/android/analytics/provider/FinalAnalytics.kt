@@ -1,6 +1,5 @@
 package test.android.analytics.provider
 
-import android.content.Context
 import android.os.Environment
 import org.json.JSONObject
 import test.android.analytics.BuildConfig
@@ -12,9 +11,7 @@ import java.util.UUID
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 
-internal class FinalAnalytics(
-    private val context: Context,
-) : Analytics {
+internal class FinalAnalytics : Analytics {
     private val map = mutableMapOf<String, String>()
     private val messages = mutableMapOf<Duration, String>()
 
@@ -33,6 +30,7 @@ internal class FinalAnalytics(
 
     private data class Event(
         val id: UUID,
+        val title: String,
         val reported: Duration,
         val customKeys: Map<String, String>,
         val messages: Map<Duration, String>
@@ -49,6 +47,7 @@ internal class FinalAnalytics(
     private fun Event.toJSONObject(): JSONObject {
         return JSONObject()
             .put("id", id.toString())
+            .put("title", title)
             .put("reported", reported.inWholeMilliseconds)
             .put("customKeys", JSONObject(customKeys))
             .put("messages", messages.toJSONObject { it.inWholeMilliseconds.toString() })
@@ -58,8 +57,7 @@ internal class FinalAnalytics(
         return Base64.getEncoder().encode(toByteArray())
     }
 
-    override fun report(entries: Map<String, String>) {
-//        val external = context.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS)
+    override fun report(title: String, entries: Map<String, String>) {
         val external = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS)
         if (external == null) TODO("No external files dir!")
         if (!external.exists()) TODO("External files dir \"$external\" does not exist!")
@@ -74,32 +72,15 @@ internal class FinalAnalytics(
         }
         val now = System.currentTimeMillis().milliseconds
         val dateFormat = SimpleDateFormat("yyyyMMdd", Locale.US)
-        val file = dir.resolve("log-${dateFormat.format(Date(now.inWholeMilliseconds))}.txt")
-//        println("Delete file \"$file\"...")
-//        file.delete()
-//        if (!file.exists() && !file.canRead() && file.length() == 0L) {
-//            println("Delete file \"$file\"...")
-//            file.delete()
-//            // todo
-//        }
-        println("File \"$file\" length: ${file.length()}")
-        println("File \"$file\" can read: ${file.canRead()}")
-        println("File \"$file\" exists: ${file.exists()}")
-//        if (!file.exists()) {
-//            if (!file.createNewFile()) TODO("File \"$file\" is not created!")
-//            if (!file.exists()) TODO("File \"$file\" does not exist!")
-//        }
+        val fileName = "log-v0.2-${dateFormat.format(Date(now.inWholeMilliseconds))}.txt"
+        val file = dir.resolve(fileName)
         val event = Event(
             id = UUID.randomUUID(),
+            title = title,
             reported = now,
             customKeys = map + entries,
             messages = messages.toMap(),
         )
-        file.appendBytes("\n".toByteArray() + event.toJSONObject().toString().base64())
-        // todo
-        println("---")
-        println(file.absolutePath)
-        println(file.readText())
-        println("---")
+        file.appendBytes(event.toJSONObject().toString().base64() + '\n'.code.toByte())
     }
 }
