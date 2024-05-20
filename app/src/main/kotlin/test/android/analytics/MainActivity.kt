@@ -48,7 +48,7 @@ internal class MainActivity : AppCompatActivity() {
             )
             it.text = "foo"
             it.setOnClickListener {
-                App.analytics.log("go to Foo")
+                App.injection.analytics.log("go to Foo")
                 val intent = Intent(this, FooActivity::class.java)
                 startActivity(intent)
             }

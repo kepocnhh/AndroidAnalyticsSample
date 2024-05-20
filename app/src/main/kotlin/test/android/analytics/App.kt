@@ -7,7 +7,10 @@ import androidx.lifecycle.ProcessLifecycleOwner
 import androidx.lifecycle.coroutineScope
 import androidx.lifecycle.eventFlow
 import kotlinx.coroutines.launch
+import test.android.analytics.module.app.Injection
 import test.android.analytics.provider.Analytics
+import test.android.analytics.provider.FinalLocals
+import test.android.analytics.provider.Locals
 import java.util.Date
 import java.util.UUID
 import kotlin.time.Duration
@@ -72,15 +75,24 @@ Event: $id
             }
         }
         */
+        val locals: Locals = FinalLocals(this)
         val analytics: Analytics = MockAnalytics()
         analytics.setCustomKey("brand", Build.BRAND)
         analytics.setCustomKey("model", Build.MODEL)
         analytics.setCustomKey("android", Build.VERSION.SDK_INT.toString())
-        _analytics = analytics
+        analytics.setCustomKey("app:id", BuildConfig.APPLICATION_ID)
+        analytics.setCustomKey("build:type", BuildConfig.BUILD_TYPE)
+        analytics.setCustomKey("version:name", BuildConfig.VERSION_NAME)
+        analytics.setCustomKey("version:code", BuildConfig.VERSION_CODE.toString())
+        analytics.setCustomKey("device:id", locals.id.toString())
+        _injection = Injection(
+            locals = locals,
+            analytics = analytics,
+        )
     }
 
     companion object {
-        private var _analytics: Analytics? = null
-        val analytics: Analytics get() = checkNotNull(_analytics)
+        private var _injection: Injection? = null
+        val injection: Injection get() = checkNotNull(_injection) { "No injection!" }
     }
 }
